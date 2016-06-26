@@ -13,6 +13,7 @@ class CommonSecurity
 
       if !sv.affected_versions.include?(version.to_s)
         sv.affected_versions.push(version.to_s)
+        sv.save
       end
 
       product.reload
