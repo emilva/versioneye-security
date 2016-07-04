@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["reiz"]
-  s.license = "MIT"
+  s.license = "AGPL-3.0"
   s.date = "2014-05-25"
   s.description = "VersionEye crawlers implemented in Ruby"
   s.email = "robert.reiz.81@gmail.com"
