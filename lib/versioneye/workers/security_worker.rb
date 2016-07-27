@@ -38,6 +38,8 @@ class SecurityWorker < Worker
       JavaSecurityCrawler.crawl
     elsif message.eql?('python_security')
       PythonSecurityCrawler.crawl
+    elsif message.eql?('node_security')
+      NodeSecurityCrawler.crawl
     end
   rescue => e
     log.error e.message

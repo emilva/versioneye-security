@@ -29,6 +29,10 @@ namespace :versioneye do
       SecurityProducer.new "python_security"
     end
 
+    scheduler.every '60m' do
+      SecurityProducer.new "node_security"
+    end
+
     scheduler.join
     while 1 == 1
       p "keep alive rake task"
@@ -68,6 +72,22 @@ namespace :versioneye do
     puts "START JavaSecurityCrawler"
     VersioneyeSecurity.new
     JavaSecurityCrawler.crawl
+    puts "---"
+  end
+
+  desc "Start PythonSecurityCrawler"
+  task :crawl_python_security do
+    puts "START PythonSecurityCrawler"
+    VersioneyeSecurity.new
+    PythonSecurityCrawler.crawl
+    puts "---"
+  end
+
+  desc "Start NodeSecurityCrawler"
+  task :crawl_node_security do
+    puts "START NodeSecurityCrawler"
+    VersioneyeSecurity.new
+    NodeSecurityCrawler.crawl
     puts "---"
   end
 
