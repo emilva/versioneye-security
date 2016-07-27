@@ -56,13 +56,17 @@ class NodeSecurityCrawler < CommonSecurity
     product = sv.product
     return nil if product.nil?
 
+    affected = []
     affected_versions = VersionService.from_ranges( product.versions, sv.affected_versions_string.gsub("||", ",") )
     patched_versions  = VersionService.from_ranges( product.versions, sv.patched_versions_string.gsub("||", ",") )
 
-    # TODO
-    # Handle the patched_versions correctly!
+    affected_versions.each do |version|
+      next if patched_versions.to_a.map(&:to_s).include?(version.to_s)
 
-    mark_versions( sv, product, affected_versions )
+      affected << version
+    end
+
+    mark_versions( sv, product, affected )
   end
 
 
