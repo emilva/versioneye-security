@@ -60,18 +60,7 @@ class NodeSecurityCrawler < CommonSecurity
     patched_versions  = VersionService.from_ranges( product.versions, sv.patched_versions_string.gsub("||", ",") )
 
     # TODO
-    # affected.each do |version_expr|
-    #   if version_expr.match(/,/)
-    #     sps    = version_expr.split(",")
-    #     condi  = sps[0]
-    #     start  = sps[1]
-    #     start  = "#{start}." if start.match(/-\z/).nil?
-    #     subset = VersionService.versions_start_with( product.versions, start )
-    #     affected_versions += VersionService.from_ranges( subset, condi )
-    #     next
-    #   end
-    #   affected_versions += VersionService.from_ranges( product.versions, version_expr )
-    # end
+    # Handle the patched_versions correctly!
 
     mark_versions( sv, product, affected_versions )
   end
