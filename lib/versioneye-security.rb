@@ -8,6 +8,7 @@ require './lib/versioneye/php_magento_crawler'
 require './lib/versioneye/ruby_security_crawler'
 require './lib/versioneye/java_security_crawler'
 require './lib/versioneye/python_security_crawler'
+require './lib/versioneye/node_security_crawler'
 
 require './lib/versioneye/producers/producer'
 require './lib/versioneye/producers/security_producer'
