@@ -100,7 +100,7 @@ with this command:
 
 Make sure that you followed the steps in the configuration section, before you run the tests!
 
-All Files covered to 95.23%.
+All Files covered to 95.82%.
 
 ## AGPL-v3 License
 
