@@ -116,6 +116,10 @@ describe JavaSecurityCrawler do
       product.versions.push( Version.new( { :version => "9.2.16" } ) )
       product.save.should be_truthy
 
+      expect( product.version_by_number('9.2.0').sv_ids ).to be_empty
+      expect( product.version_by_number('9.2.1').sv_ids ).to be_empty
+      expect( product.version_by_number('9.2.2').sv_ids ).to be_empty
+
       worker = Thread.new{ SecurityWorker.new.work }
 
       SecurityProducer.new("java_security")
@@ -124,6 +128,11 @@ describe JavaSecurityCrawler do
       worker.exit
 
       product = Product.fetch_product Product::A_LANGUAGE_JAVA, 'org.eclipse.jetty/jetty-http'
+      expect( product.version_by_number('9.2.9').sv_ids ).to be_empty
+      expect( product.version_by_number('9.2.10').sv_ids ).to be_empty
+      expect( product.version_by_number('9.2.11').sv_ids ).to be_empty
+      expect( product.version_by_number('9.2.16').sv_ids ).to be_empty
+
       expect( product.version_by_number('9.2.0').sv_ids ).to be_empty
       expect( product.version_by_number('9.2.1').sv_ids ).to be_empty
       expect( product.version_by_number('9.2.2').sv_ids ).to be_empty
@@ -153,7 +162,8 @@ describe JavaSecurityCrawler do
 
       worker.exit
 
-      sv = SecurityVulnerability.where(:language => "Java", :prod_key => "commons-beanutils/commons-beanutils" ).first
+      sv = SecurityVulnerability.where(:language => Product::A_LANGUAGE_JAVA, :prod_key => "commons-beanutils/commons-beanutils" ).first
+      expect( sv ).to_not be_nil
       expect( sv.affected_versions.include?('1.9.0') ).to be_truthy
       expect( sv.affected_versions.include?('1.9.1') ).to be_truthy
       expect( sv.affected_versions.include?('1.9.2') ).to be_falsey

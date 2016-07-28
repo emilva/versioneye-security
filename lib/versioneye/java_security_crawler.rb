@@ -76,34 +76,55 @@ class JavaSecurityCrawler < CommonSecurity
   end
 
 
-  def self.mark_affected_versions sv, affected, fixedin
+  def self.mark_affected_versions sv, affected, fixedin = []
     product = sv.product
     return nil if product.nil?
 
+    branches = {}
+    fixed_versions    = collect_fixed_versions product, fixedin
+    affected_versions = []
+    affected.each do |version_expr|
+      versions = []
+      if version_expr.match(/,/)
+        st = version_expr.split(",")[1]
+        branches[st] = [] if branches[st].to_a.empty?
+        branches[st] << fetch_range(product, version_expr).map(&:to_s)
+      else
+        versions += VersionService.from_ranges( product.versions, version_expr )
+        versions.each do |version|
+          affected_versions << version if !fixed_versions.map(&:to_s).include?(version.to_s)
+        end
+      end
+    end
+
+    branches.keys.each do |key|
+      flatten = branches[key].flatten
+      branches[key].each do |ar|
+        flatten = flatten & ar
+      end
+      flatten.each do |version|
+        affected_versions << version if !fixed_versions.map(&:to_s).include?(version.to_s)
+      end
+    end
+
+    mark_versions( sv, product, affected_versions.flatten )
+  end
+
+
+  def self.collect_fixed_versions product, fixedin
     fixed_versions = []
+    return fixed_versions if fixedin.nil? || fixedin.empty?
+
     fixedin.each do |version_expr|
+      next if version_expr.to_s.empty?
+
       if version_expr.match(/,/)
         fixed_versions += fetch_range product, version_expr
         next
       end
       fixed_versions += VersionService.from_ranges( product.versions, version_expr )
     end
-    fixed_versions = fixed_versions.flatten
-
-    affected_versions = []
-    affected.each do |version_expr|
-      versions = []
-      if version_expr.match(/,/)
-        versions = fetch_range product, version_expr
-      else
-        versions += VersionService.from_ranges( product.versions, version_expr )
-      end
-      versions.each do |version|
-        affected_versions << version if !fixed_versions.map(&:to_s).include?(version.to_s)
-      end
-    end
-
-    mark_versions( sv, product, affected_versions.flatten )
+    fixed_versions.flatten
   end
 
 
