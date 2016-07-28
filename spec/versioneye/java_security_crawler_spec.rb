@@ -99,6 +99,47 @@ describe JavaSecurityCrawler do
     end
 
     it "succeeds" do
+      product = ProductFactory.create_for_maven 'org.eclipse.jetty', 'jetty-http', "10.0.0"
+      product.save.should be_truthy
+      product.versions.push( Version.new( { :version => "9.2.0" } ) )
+      product.versions.push( Version.new( { :version => "9.2.1" } ) )
+      product.versions.push( Version.new( { :version => "9.2.2" } ) )
+      product.versions.push( Version.new( { :version => "9.2.3" } ) )
+      product.versions.push( Version.new( { :version => "9.2.4" } ) )
+      product.versions.push( Version.new( { :version => "9.2.5" } ) )
+      product.versions.push( Version.new( { :version => "9.2.6" } ) )
+      product.versions.push( Version.new( { :version => "9.2.7" } ) )
+      product.versions.push( Version.new( { :version => "9.2.8" } ) )
+      product.versions.push( Version.new( { :version => "9.2.9" } ) )
+      product.versions.push( Version.new( { :version => "9.2.10" } ) )
+      product.versions.push( Version.new( { :version => "9.2.11" } ) )
+      product.versions.push( Version.new( { :version => "9.2.16" } ) )
+      product.save.should be_truthy
+
+      worker = Thread.new{ SecurityWorker.new.work }
+
+      SecurityProducer.new("java_security")
+      sleep 10
+
+      worker.exit
+
+      product = Product.fetch_product Product::A_LANGUAGE_JAVA, 'org.eclipse.jetty/jetty-http'
+      expect( product.version_by_number('9.2.0').sv_ids ).to be_empty
+      expect( product.version_by_number('9.2.1').sv_ids ).to be_empty
+      expect( product.version_by_number('9.2.2').sv_ids ).to be_empty
+      expect( product.version_by_number('9.2.3').sv_ids ).to_not be_empty
+      expect( product.version_by_number('9.2.4').sv_ids ).to_not be_empty
+      expect( product.version_by_number('9.2.5').sv_ids ).to_not be_empty
+      expect( product.version_by_number('9.2.6').sv_ids ).to_not be_empty
+      expect( product.version_by_number('9.2.7').sv_ids ).to_not be_empty
+      expect( product.version_by_number('9.2.8').sv_ids ).to_not be_empty
+      expect( product.version_by_number('9.2.9').sv_ids ).to be_empty
+      expect( product.version_by_number('9.2.10').sv_ids ).to be_empty
+      expect( product.version_by_number('9.2.11').sv_ids ).to be_empty
+      expect( product.version_by_number('9.2.16').sv_ids ).to be_empty
+    end
+
+    it "succeeds" do
       product = ProductFactory.create_for_maven 'commons-beanutils', 'commons-beanutils', "1.9.0"
       product.save.should be_truthy
       product.versions.push( Version.new( { :version => "1.9.1" } ) )

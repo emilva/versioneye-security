@@ -45,7 +45,7 @@ class JavaSecurityCrawler < CommonSecurity
 
       sv = fetch_sv Product::A_LANGUAGE_JAVA, prod_key, name_id
       update( sv, yml, affected )
-      mark_affected_versions( sv, affected['version'] )
+      mark_affected_versions( sv, affected['version'], affected['fixedin'] )
       sv.save
     end
   rescue => e
@@ -76,25 +76,44 @@ class JavaSecurityCrawler < CommonSecurity
   end
 
 
-  def self.mark_affected_versions sv, affected
+  def self.mark_affected_versions sv, affected, fixedin
     product = sv.product
     return nil if product.nil?
 
-    affected_versions = []
-    affected.each do |version_expr|
+    fixed_versions = []
+    fixedin.each do |version_expr|
       if version_expr.match(/,/)
-        sps    = version_expr.split(",")
-        condi  = sps[0]
-        start  = sps[1]
-        start  = "#{start}." if start.match(/-\z/).nil?
-        subset = VersionService.versions_start_with( product.versions, start )
-        affected_versions += VersionService.from_ranges( subset, condi )
+        fixed_versions += fetch_range product, version_expr
         next
       end
-      affected_versions += VersionService.from_ranges( product.versions, version_expr )
+      fixed_versions += VersionService.from_ranges( product.versions, version_expr )
+    end
+    fixed_versions = fixed_versions.flatten
+
+    affected_versions = []
+    affected.each do |version_expr|
+      versions = []
+      if version_expr.match(/,/)
+        versions = fetch_range product, version_expr
+      else
+        versions += VersionService.from_ranges( product.versions, version_expr )
+      end
+      versions.each do |version|
+        affected_versions << version if !fixed_versions.map(&:to_s).include?(version.to_s)
+      end
     end
 
-    mark_versions( sv, product, affected_versions )
+    mark_versions( sv, product, affected_versions.flatten )
+  end
+
+
+  def self.fetch_range product, version_expr
+    sps    = version_expr.split(",")
+    condi  = sps[0]
+    start  = sps[1]
+    start  = "#{start}." if start.match(/-\z/).nil?
+    subset = VersionService.versions_start_with( product.versions, start )
+    VersionService.from_ranges( subset, condi )
   end
 
 
