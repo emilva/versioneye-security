@@ -68,7 +68,7 @@ Then you can install the dependencies like this:
 bundle install
 ```
 
-# Rake Tasks
+## Rake Tasks
 
 Get a list of all rake tasks:
 
@@ -81,10 +81,6 @@ Crawl for Java security vulnerabilities:
 ```
 rake versioneye:crawl_java_security
 ```
-
-## Support
-
-For commercial support send a message to `support@versioneye.com`.
 
 ## Tests
 
@@ -102,6 +98,10 @@ with this command:
 Make sure that you followed the steps in the configuration section, before you run the tests!
 
 All Files covered to 95.82%.
+
+## Support
+
+For commercial support send a message to `support@versioneye.com`.
 
 ## AGPL-v3 License
 
