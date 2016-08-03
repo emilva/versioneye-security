@@ -40,6 +40,8 @@ class SecurityWorker < Worker
       PythonSecurityCrawler.crawl
     elsif message.eql?('node_security')
       NodeSecurityCrawler.crawl
+    elsif message.eql?('snyk_security')
+      SnykSecurityCrawler.crawl
     end
   rescue => e
     log.error e.message

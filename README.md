@@ -11,6 +11,7 @@ Currently this projects has data fetchers for:
  - PHP ([SensioLabs DB](https://github.com/FriendsOfPHP/security-advisories.git))
  - PHP Magento ([Magento Security Advisory](https://github.com/Cotya/magento-security-advisories.git))
  - Node.JS ([NodeSecurity](https://nodesecurity.io/))
+ - Node.JS ([Snyk](https://snyk.io/))
 
 ## Start the backend services for VersionEye
 
