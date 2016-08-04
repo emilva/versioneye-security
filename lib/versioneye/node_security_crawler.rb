@@ -37,6 +37,7 @@ class NodeSecurityCrawler < CommonSecurity
     nodesec_id        = sec_issue['id']
     sv.source         = 'nodesecurity'
     sv.name_id        = "nodesecurity_#{nodesec_id}"
+    sv.nsp            = nodesec_id
     sv.author         = sec_issue['author']
     sv.summary        = sec_issue['title']
     sv.description    = sec_issue['overview']
