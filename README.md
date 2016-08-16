@@ -1,4 +1,4 @@
-[![Circle CI](https://circleci.com/gh/versioneye/versioneye-security.svg?style=svg)](https://circleci.com/gh/versioneye/versioneye-security) [![Dependency Status](https://www.versioneye.com/user/projects/5626a70c36d0ab00160010ce/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5626a70c36d0ab00160010ce)
+[![Circle CI](https://circleci.com/gh/versioneye/versioneye-security.svg?style=svg)](https://circleci.com/gh/versioneye/versioneye-security) [![Dependency Status](https://www.versioneye.com/user/projects/57b32323a598f5004b59158f/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57b32323a598f5004b59158f)
 
 # VersionEye Security
 
