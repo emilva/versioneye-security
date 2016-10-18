@@ -2,7 +2,7 @@ source "http://rubygems.org"
 
 gem 'syck'    , '1.1.0'
 
-gem 'versioneye-core'    , :git => 'https://github.com/versioneye/versioneye-core.git', :tag => 'v10.1.3'
+gem 'versioneye-core'    , :git => 'https://github.com/versioneye/versioneye-core.git', :tag => 'v10.3.1'
 # gem 'versioneye-core'    , :path => "~/workspace/versioneye/versioneye-core"
 
 gem 'rufus-scheduler', '3.2.2'
@@ -19,5 +19,5 @@ group :test do
   gem 'rspec_junit_formatter', '0.2.3'
   gem 'database_cleaner', '~> 1.5.1'
   gem 'factory_girl'    , '~> 4.7.0'
-  gem 'capybara'        , '~> 2.7.0'
+  gem 'capybara'        , '~> 2.10.1'
 end
