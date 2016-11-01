@@ -73,6 +73,24 @@ describe JavaSecurityCrawler do
       version = product.version_by_number '3.0.0'
       expect( version.sv_ids ).to be_empty
     end
+
+    it 'will mark the affected versions' do
+      product = ProductFactory.create_for_maven 'ca.juliusdavies', 'not-yet-commons-ssl', '0.3.9'
+      product.add_version('0.3.11')
+      expect( product.save ).to be_truthy
+
+      sv = SecurityVulnerability.new
+      sv.language = product.language
+      sv.prod_key = product.prod_key
+      JavaSecurityCrawler.mark_affected_versions sv, ['<=0.3.13']
+      product.reload
+
+      version = product.version_by_number '0.3.9'
+      expect( version.sv_ids.first ).to eql(sv.ids)
+
+      version = product.version_by_number '0.3.13'
+      expect( version.sv_ids.first ).to eql(sv.ids)
+    end
   end
 
   describe 'crawl' do
