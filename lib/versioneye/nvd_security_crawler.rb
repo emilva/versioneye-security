@@ -138,7 +138,8 @@ class NvdSecurityCrawler < CommonSecurity
     cve = map[:cve]
     language = Product::A_LANGUAGE_JAVA
     prod_keys = mapping['Maven']
-    prod_keys.each do |prod_key|
+    prod_keys.each do |pk|
+      prod_key = pk.gsub(":", "/")
       sv = SecurityVulnerability.where(:language => language, :prod_key => prod_key, :cve => cve).first
       if sv
         self.logger.info "-- #{cve} exist already from #{sv.source} --"
@@ -165,10 +166,14 @@ class NvdSecurityCrawler < CommonSecurity
         sv.links[lkey] = href
       end
 
+      product = sv.product
       map[:products][vendor_product].each do |cpe|
         sps = cpe.split(":")
         version = sps[4]
         sv.affected_versions.push version
+        if product
+          product.add_svid version.to_s, sv
+        end
       end
       sv.affected_versions_string = sv.affected_versions.join(', ')
       saved = sv.save
