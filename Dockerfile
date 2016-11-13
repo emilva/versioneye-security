@@ -3,7 +3,7 @@ MAINTAINER  Robert Reiz <reiz@versioneye.com>
 
 ADD . /app
 
-RUN apt-get update && apt-get install -y supervisor; \
+RUN apt-get update && apt-get install -y supervisor unzip; \
     cp /app/supervisord.conf /etc/supervisord.conf; \
     cd /app/ && bundle install;
 
