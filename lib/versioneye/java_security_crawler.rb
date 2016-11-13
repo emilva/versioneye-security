@@ -59,7 +59,12 @@ class JavaSecurityCrawler < CommonSecurity
     sv.description = yml['description']
     sv.summary     = yml['title']
     sv.summary     = sv.name_id if sv.summary.to_s.empty?
+
     sv.cve         = yml['cve']
+    if !sv.cve.to_s.empty? && sv.cve.match(/^cve-/i).nil?
+      sv.cve = "CVE-#{sv.cve}"
+    end
+
     sv.cvss_v2     = yml['cvss_v2']
     sv.affected_versions_string = affected['version'].to_a.join(" && ")
     sv.patched_versions_string  = affected['fixedin'].to_a.join(" && ")
