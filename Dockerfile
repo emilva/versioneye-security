@@ -1,9 +1,9 @@
-FROM        versioneye/ruby-base:2.4.2
+FROM        versioneye/ruby-base:2.4.4
 MAINTAINER  Robert Reiz <reiz@versioneye.com>
 
 ADD . /app
 
-RUN apt-get update && apt-get install -y supervisor; \
+RUN apt-get update && apt-get install -y supervisor unzip; \
     cp /app/supervisord.conf /etc/supervisord.conf; \
     cd /app/ && bundle install;
 
