@@ -5,12 +5,12 @@ gem 'syck'    , '1.2.0'
 gem 'versioneye-core'    , :git => 'https://github.com/versioneye/versioneye-core.git', :tag => 'v10.11.7'
 # gem 'versioneye-core'    , :path => "~/workspace/versioneye/versioneye-core"
 
-gem 'rufus-scheduler', '3.2.2'
+gem 'rufus-scheduler', '3.3.1'
 
 group :development do
   gem "shoulda"  , ">= 0"
   gem "rdoc"     , "~> 5.0.0"
-  gem "jeweler"  , "~> 2.1.0"
+  gem "jeweler"  , "~> 2.3.0"
 end
 
 group :test do
@@ -19,5 +19,5 @@ group :test do
   gem 'rspec_junit_formatter', '0.2.3'
   gem 'database_cleaner', '~> 1.5.1'
   gem 'factory_girl'    , '~> 4.7.0'
-  gem 'capybara'        , '~> 2.10.1'
+  gem 'capybara'        , '~> 2.11.0'
 end
