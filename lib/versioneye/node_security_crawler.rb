@@ -66,14 +66,14 @@ class NodeSecurityCrawler < CommonSecurity
     affected = []
     patched  = [] # patched version strings
 
-    sv.patched_versions_string.split("||").each do |patched_range|
+    sv.patched_versions_string.to_s.split("||").each do |patched_range|
       range = patched_range.gsub("> ", ">").gsub("< ", "<").gsub(">= ", ">=").gsub("<= ", "<=").strip.gsub(" ", ",")
       patched_versions = VersionService.from_ranges( product.versions, range )
       patched << patched_versions.to_a.map(&:to_s)
       patched = patched.flatten
     end
 
-    sv.affected_versions_string.split("||").each do |affected_range|
+    sv.affected_versions_string.to_s.split("||").each do |affected_range|
       range = affected_range.gsub("> ", ">").gsub("< ", "<").gsub(">= ", ">=").gsub("<= ", "<=").strip.gsub(" ", ",")
       affected_versions = VersionService.from_ranges( product.versions, range )
       affected_versions.each do |av|
