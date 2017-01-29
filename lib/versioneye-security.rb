@@ -1,6 +1,8 @@
 require 'mongoid'
 require 'httparty'
 
+require 'versioneye-core'
+
 require 'settings'
 require './lib/versioneye/common_security'
 require './lib/versioneye/php_sensiolabs_crawler'
