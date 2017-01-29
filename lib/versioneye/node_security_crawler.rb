@@ -20,6 +20,12 @@ class NodeSecurityCrawler < CommonSecurity
     index["results"].each do |sec_issue|
       parse_issue sec_issue
     end
+    nid = 1
+    while nid < 500 do
+      sec_issue = JSON.parse HttpService.fetch_response("#{url}/#{nid}").body
+      parse_issue sec_issue
+      nid += 1
+    end
   end
 
 
