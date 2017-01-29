@@ -21,11 +21,21 @@ class NodeSecurityCrawler < CommonSecurity
       parse_issue sec_issue
     end
     nid = 1
-    while nid < 500 do
-      sec_issue = JSON.parse HttpService.fetch_response("#{url}/#{nid}").body
-      parse_issue sec_issue
+    while nid < 700 do
+      body = fetch_http_body "#{url}/#{nid}"
       nid += 1
+      next if body.nil?
+
+      sec_issue = JSON.parse body
+      parse_issue sec_issue
     end
+  end
+
+
+  def self.fetch_http_body url
+    HttpService.fetch_response( url ).body
+  rescue => e
+    nil
   end
 
 
