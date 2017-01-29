@@ -34,7 +34,7 @@ class NodeSecurityCrawler < CommonSecurity
     update_sv sv, sec_issue
     mark_affected_versions sv
   rescue => e
-    self.logger.error "ERROR in parse_issue Message: #{e.message}"
+    self.logger.error "ERROR in parse_issue Message: #{e.message} - #{sec_issue}"
     self.logger.error e.backtrace.join("\n")
   end
 
@@ -94,6 +94,9 @@ class NodeSecurityCrawler < CommonSecurity
 
     node_id = sec_issue["id"]
     name_id = "nodesecurity_#{node_id}"
+    sv = SecurityVulnerability.where(:language => language, :prod_key => prod_key, :name_id => name_id ).first
+    return sv if sv
+
     fetch_sv language, prod_key, name_id
   end
 
