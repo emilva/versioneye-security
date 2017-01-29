@@ -38,6 +38,9 @@ class NvdMapping
     "vaadin:vaadin" => {
       "Maven" => ["com.vaadin:vaadin"]
     },
+    "hibernate:hibernate_validator" => {
+      "Maven" => ["org.hibernate:hibernate-validator"]
+    },
     "pivotal_software:spring_data_jpa" => {
       "Maven" => ["org.springframework.data:spring-data-jpa"]
     },
@@ -115,7 +118,29 @@ class NvdMapping
         "org.springframework:springloaded",
         "org.springframework.data:spring-data-jpa"
       ]
-    }
+    },
+    "fasterxml:jackson"=> {
+      "Maven" => [
+        "com.fasterxml.jackson.dataformat:jackson-dataformat-xml",
+        "com.fasterxml.jackson.core:jackson-core"
+      ]
+    },
+    "apache:xerces-c"=> {
+      "Nuget" => [
+        "xercesc",
+        "xercesc.redist"
+      ],
+      "Maven" => [
+        "apache-xercesc.contrib:xercesc"
+      ]
+    },
+    "apache:xalan-java"=> {
+      "Maven" => [
+        "xalan:xalan",
+        "org.lucee:xalan",
+        "org.apache.xalan:xalan"
+      ]
+    },
   }
 
 
