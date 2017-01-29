@@ -33,7 +33,11 @@ class NodeSecurityCrawler < CommonSecurity
 
 
   def self.fetch_http_body url
-    HttpService.fetch_response( url ).body
+    response = HttpService.fetch_response( url )
+    return nil if response.code == 404
+
+    
+    response.body
   rescue => e
     nil
   end
