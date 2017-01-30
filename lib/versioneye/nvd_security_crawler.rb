@@ -148,9 +148,11 @@ class NvdSecurityCrawler < CommonSecurity
   def self.proecess_maven_keys map, vendor_product, mapping
     language = Product::A_LANGUAGE_JAVA
     prod_keys = mapping['Maven']
+    return nil if prod_keys.nil?
+
     prod_keys.each do |pk|
       prod_key = pk.gsub(":", "/")
-      process_cpe( language, prod_key, map )
+      process_cpe( language, prod_key, map, vendor_product )
     end
   rescue => e
     self.logger.error "ERROR in proecess_maven_keys with message: #{e.message}"
@@ -161,6 +163,8 @@ class NvdSecurityCrawler < CommonSecurity
   def self.proecess_nuget_keys map, vendor_product, mapping
     language = Product::A_LANGUAGE_CSHARP
     prod_keys = mapping['Nuget']
+    return nil if prod_keys.nil?
+
     prod_keys.each do |prod_key|
       process_cpe( language, prod_key, map, vendor_product )
     end
