@@ -34,13 +34,7 @@ class NvdSecurityCrawler < CommonSecurity
 
 
   def self.parse_xml file_path
-    content = File.read( file_path )
-    contnet = content.gsub("\n", "").gsub("\t", "").gsub("  ", "")
-
-    doc = Nokogiri.XML( content )
-    doc.remove_namespaces!
-
-    entries = doc.xpath("//entry")
+    entries = fetch_entries file_path
     self.logger.info "#{entries.count} entries for #{file_path}"
 
     entries.each do |entry|
@@ -56,6 +50,17 @@ class NvdSecurityCrawler < CommonSecurity
   rescue => e
     self.logger.error "ERROR in parse_xml Message: #{e.message}"
     self.logger.error e.backtrace.join("\n")
+  end
+
+
+  def self.fetch_entries file_path
+    content = File.read( file_path )
+    contnet = content.gsub("\n", "").gsub("\t", "").gsub("  ", "")
+
+    doc = Nokogiri.XML( content )
+    doc.remove_namespaces!
+
+    doc.xpath("//entry")
   end
 
 
@@ -181,7 +186,6 @@ class NvdSecurityCrawler < CommonSecurity
       self.logger.info "#{sv.cve} for #{language} : #{prod_key} saved: #{saved}"
     end
   end
-
 
 
 end
