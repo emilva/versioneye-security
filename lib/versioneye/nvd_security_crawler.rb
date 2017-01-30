@@ -141,6 +141,7 @@ class NvdSecurityCrawler < CommonSecurity
 
     mapping = NvdMapping::A_MAPPING[vendor_product]
     proecess_maven_keys map, vendor_product, mapping
+    proecess_nuget_keys map, vendor_product, mapping
   end
 
 
@@ -161,7 +162,7 @@ class NvdSecurityCrawler < CommonSecurity
     language = Product::A_LANGUAGE_CSHARP
     prod_keys = mapping['Nuget']
     prod_keys.each do |prod_key|
-      process_cpe( language, prod_key, map )
+      process_cpe( language, prod_key, map, vendor_product )
     end
   rescue => e
     self.logger.error "ERROR in proecess_nuget_keys with message: #{e.message}"
@@ -169,7 +170,7 @@ class NvdSecurityCrawler < CommonSecurity
   end
 
 
-  def self.process_cpe language, prod_key, map
+  def self.process_cpe language, prod_key, map, vendor_product
     cve = map[:cve]
     sv = SecurityVulnerability.where(:language => language, :prod_key => prod_key, :cve => cve).first
     if sv

@@ -125,7 +125,7 @@ class NvdMapping
         "com.fasterxml.jackson.core:jackson-core"
       ]
     },
-    "apache:xerces-c"=> {
+    "apache:xerces-c" => {
       "Nuget" => [
         "xercesc",
         "xercesc.redist"
