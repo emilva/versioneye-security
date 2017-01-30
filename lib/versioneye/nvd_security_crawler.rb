@@ -174,7 +174,7 @@ class NvdSecurityCrawler < CommonSecurity
     sv = SecurityVulnerability.where(:language => language, :prod_key => prod_key, :cve => cve).first
     if sv
       self.logger.info "-- #{cve} exist already from #{sv.source} --"
-      next
+      return nil
     end
 
     sv = SecurityVulnerability.new({:language => language, :prod_key => prod_key, :source => "NVD"})
