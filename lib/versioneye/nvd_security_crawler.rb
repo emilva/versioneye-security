@@ -140,51 +140,79 @@ class NvdSecurityCrawler < CommonSecurity
     self.logger.info msg
 
     mapping = NvdMapping::A_MAPPING[vendor_product]
-    cve = map[:cve]
+    proecess_maven_keys map, vendor_product, mapping
+  end
+
+
+  def self.proecess_maven_keys map, vendor_product, mapping
     language = Product::A_LANGUAGE_JAVA
     prod_keys = mapping['Maven']
     prod_keys.each do |pk|
       prod_key = pk.gsub(":", "/")
-      sv = SecurityVulnerability.where(:language => language, :prod_key => prod_key, :cve => cve).first
-      if sv
-        self.logger.info "-- #{cve} exist already from #{sv.source} --"
-        next
-      end
-
-      sv = SecurityVulnerability.new({:language => language, :prod_key => prod_key, :source => "NVD"})
-      sv.description = map[:summary]
-      sv.summary = cve
-      sv.name_id = cve
-      sv.cve     = cve
-      sv.cves.push cve if !sv.cves.include?(cve)
-
-      sv.cwe = map[:cwe]
-      sv.cwes.push map[:cwe] if !sv.cwes.include?(map[:cwe])
-
-      sv.cvss_v2 = map[:cvss]
-
-      sv.publish_date = map[:published]
-      sv.modified     = map[:modified]
-
-      map[:links].each do |href|
-        lkey = href.gsub(".", "::")
-        sv.links[lkey] = href
-      end
-
-      product = sv.product
-      map[:products][vendor_product].each do |cpe|
-        sps = cpe.split(":")
-        version = sps[4]
-        sv.affected_versions.push version
-        if product
-          product.add_svid version.to_s, sv
-        end
-      end
-      sv.affected_versions_string = sv.affected_versions.join(', ')
-      saved = sv.save
-
-      self.logger.info "#{sv.cve} for #{language} : #{prod_key} saved: #{saved}"
+      process_cpe( language, prod_key, map )
     end
+  rescue => e
+    self.logger.error "ERROR in proecess_maven_keys with message: #{e.message}"
+    self.logger.error e.backtrace.join("\n")
+  end
+
+
+  def self.proecess_nuget_keys map, vendor_product, mapping
+    language = Product::A_LANGUAGE_CSHARP
+    prod_keys = mapping['Nuget']
+    prod_keys.each do |prod_key|
+      process_cpe( language, prod_key, map )
+    end
+  rescue => e
+    self.logger.error "ERROR in proecess_nuget_keys with message: #{e.message}"
+    self.logger.error e.backtrace.join("\n")
+  end
+
+
+  def self.process_cpe language, prod_key, map
+    cve = map[:cve]
+    sv = SecurityVulnerability.where(:language => language, :prod_key => prod_key, :cve => cve).first
+    if sv
+      self.logger.info "-- #{cve} exist already from #{sv.source} --"
+      next
+    end
+
+    sv = SecurityVulnerability.new({:language => language, :prod_key => prod_key, :source => "NVD"})
+    sv.description = map[:summary]
+    sv.summary = cve
+    sv.name_id = cve
+    sv.cve     = cve
+    sv.cves.push cve if !sv.cves.include?(cve)
+
+    sv.cwe = map[:cwe]
+    sv.cwes.push map[:cwe] if !sv.cwes.include?(map[:cwe])
+
+    sv.cvss_v2 = map[:cvss]
+
+    sv.publish_date = map[:published]
+    sv.modified     = map[:modified]
+
+    map[:links].each do |href|
+      lkey = href.gsub(".", "::")
+      sv.links[lkey] = href
+    end
+
+    product = sv.product
+    map[:products][vendor_product].each do |cpe|
+      sps = cpe.split(":")
+      version = sps[4]
+      sv.affected_versions.push version
+      if product
+        product.add_svid version.to_s, sv
+      end
+    end
+    sv.affected_versions_string = sv.affected_versions.join(', ')
+    saved = sv.save
+
+    self.logger.info "#{sv.cve} for #{language} : #{prod_key} saved: #{saved}"
+  rescue => e
+    self.logger.error "ERROR in process_cpe with message: #{e.message}"
+    self.logger.error e.backtrace.join("\n")
   end
 
 
