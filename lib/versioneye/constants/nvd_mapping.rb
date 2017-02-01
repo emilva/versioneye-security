@@ -141,6 +141,13 @@ class NvdMapping
         "org.apache.xalan:xalan"
       ]
     },
+    "netty_project:netty"=> {
+      "Maven" => [
+        "io.netty:netty",
+        "io.netty:netty-all",
+        "org.jboss.netty:netty"
+      ]
+    }
   }
 
 
