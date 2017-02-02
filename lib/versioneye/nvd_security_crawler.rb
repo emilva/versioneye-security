@@ -206,10 +206,7 @@ class NvdSecurityCrawler < CommonSecurity
     map[:products][vendor_product].each do |cpe|
       sps = cpe.split(":")
       version = sps[4]
-      sv.affected_versions.push version
-      if product
-        product.add_svid version.to_s, sv
-      end
+      process_version sv, product, version_string
     end
     sv.affected_versions_string = sv.affected_versions.join(', ')
     saved = sv.save
@@ -217,6 +214,28 @@ class NvdSecurityCrawler < CommonSecurity
     self.logger.info "#{sv.cve} for #{language} : #{prod_key} saved: #{saved}"
   rescue => e
     self.logger.error "ERROR in process_cpe with message: #{e.message}"
+    self.logger.error e.backtrace.join("\n")
+  end
+
+
+  def self.process_version sv, product, version_string, force_save = true
+    if force_save
+      sv.add_affected_version version_string
+    end
+    return nil if product.nil?
+
+    if product.add_svid( version_string.to_s, sv )
+      sv.add_affected_version version_string
+    end
+    if product.prod_key.match(/\Aorg\.apache\.hbase/) && version_string.to_s.match(/hadoop/).nil?
+      process_version sv, product, "#{version_string}-hadoop1", false
+      process_version sv, product, "#{version_string}-hadoop2", false
+    end
+    if product.prod_key.match(/\Aorg.spring/) && version_string.to_s.match(/RELEASE/).nil?
+      process_version sv, product, "#{version_string}.RELEASE", false
+    end
+  rescue => e
+    self.logger.error "ERROR in process_version with message: #{e.message}"
     self.logger.error e.backtrace.join("\n")
   end
 
