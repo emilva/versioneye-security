@@ -147,6 +147,16 @@ class NvdMapping
         "io.netty:netty-all",
         "org.jboss.netty:netty"
       ]
+    },
+    "apache:hbase"=> {
+      "Maven" => [
+        "org.apache.hbase:hbase",
+        "org.apache.hbase:hbase-client",
+        "org.apache.hbase:hbase-common",
+        "org.apache.hbase:hbase-annotations",
+        "org.apache.hbase:hbase-protocol",
+        "org.apache.hbase:hbase-it",
+      ]
     }
   }
 
