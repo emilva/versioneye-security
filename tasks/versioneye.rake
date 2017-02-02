@@ -95,4 +95,13 @@ namespace :versioneye do
     puts "---"
   end
 
+  desc "Start NvdSecurityCrawler"
+  task :crawl_nvd do
+    puts "START NvdSecurityCrawler"
+    VersioneyeSecurity.new
+    NvdSecurityCrawler.crawl
+    puts "END NvdSecurityCrawler"
+    puts "---"
+  end
+
 end
