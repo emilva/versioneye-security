@@ -205,7 +205,7 @@ class NvdSecurityCrawler < CommonSecurity
     product = sv.product
     map[:products][vendor_product].each do |cpe|
       sps = cpe.split(":")
-      version = sps[4]
+      version_string = sps[4]
       process_version sv, product, version_string
     end
     sv.affected_versions_string = sv.affected_versions.join(', ')
