@@ -151,6 +151,7 @@ class NvdMapping
     "apache:hbase"=> {
       "Maven" => [
         "org.apache.hbase:hbase",
+        "org.apache.hbase:hbase-core",
         "org.apache.hbase:hbase-client",
         "org.apache.hbase:hbase-common",
         "org.apache.hbase:hbase-annotations",
