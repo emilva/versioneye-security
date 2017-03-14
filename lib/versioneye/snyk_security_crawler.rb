@@ -15,7 +15,7 @@ class SnykSecurityCrawler < NodeSecurityCrawler
 
 
   def self.perform_crawl
-    url = 'https://raw.githubusercontent.com/Snyk/vulndb/snapshots/master/snapshot.json'
+    url = 'https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/chore-schema-changes/partner.json'
     index = JSON.parse HttpService.fetch_response(url).body
     index["npm"].keys.each do |key|
       svs = index["npm"][key]
@@ -50,8 +50,8 @@ class SnykSecurityCrawler < NodeSecurityCrawler
     sv.cwes           = sec_issue['identifiers']['CWE']
     sv.nsp            = sec_issue['identifiers']['NSP']
     sv.publish_date   = sec_issue['publish_date']
-    sv.affected_versions_string = sec_issue['semver']['vulnerable']
-    sv.patched_versions_string  = sec_issue['semver']['unaffected']
+    sv.affected_versions_string = sec_issue['semver']['vulnerable'].to_a.join("||")
+    sv.patched_versions_string  = sec_issue['semver']['unaffected'].to_a.join("||")
     sv.publish_date  = sec_issue['disclosureTime']
     sv.save
   end
