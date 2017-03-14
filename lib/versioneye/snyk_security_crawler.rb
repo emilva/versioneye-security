@@ -45,7 +45,9 @@ class SnykSecurityCrawler < NodeSecurityCrawler
     sv.author         = sec_issue['credit'].to_a.join(", ")
     sv.cvss_v3        = sec_issue['CVSSv3']
     sv.severity       = sec_issue['severity']
-    sv.cve            = sec_issue['identifiers']['CVE'].first
+    if !sec_issue['identifiers']['CVE'].nil?
+      sv.cve = sec_issue['identifiers']['CVE'].first
+    end
     sv.cves           = sec_issue['identifiers']['CVE']
     sv.cwes           = sec_issue['identifiers']['CWE']
     sv.nsp            = sec_issue['identifiers']['NSP']
