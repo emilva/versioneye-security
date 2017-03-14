@@ -36,6 +36,11 @@ class PhpSensiolabsCrawler < CommonSecurity
 
   def self.parse_yaml filepath, source = 'sensiolabs-security-advisories'
     yml       = read_yaml filepath
+    if yml.nil?
+      self.logger.error "No YML file found for #{filepath}"
+      return false
+    end
+
     name_id   = filepath.split("/").last.gsub(".yaml", "").gsub(".yml", "")
     reference = yml['reference'].to_s
     prod_key  = reference.gsub("composer://", "").downcase
