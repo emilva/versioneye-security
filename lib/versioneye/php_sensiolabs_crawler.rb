@@ -35,7 +35,7 @@ class PhpSensiolabsCrawler < CommonSecurity
 
 
   def self.parse_yaml filepath, source = 'sensiolabs-security-advisories'
-    yml       = read_yaml filepath
+    yml = read_yaml filepath
     if yml.nil?
       self.logger.error "No YML file found for #{filepath}"
       return false
@@ -102,6 +102,14 @@ class PhpSensiolabsCrawler < CommonSecurity
     def self.read_yaml filepath
       Syck.load_file( filepath )
     rescue => e
+      read_yaml_utf filepath
+    end
+
+
+    def self.read_yaml_utf filepath
+      content = File.read( filepath )
+      YAML.load "--- |\n#{content}"
+    rescue => e
       correct_and_read filepath
     end
 
@@ -113,14 +121,6 @@ class PhpSensiolabsCrawler < CommonSecurity
 
       improved = content.gsub(match[1], "\"#{match[1]}\"")
       Syck.load( improved )
-    rescue => e
-      read_yaml_utf filepath
-    end
-
-
-    def self.read_yaml_utf filepath
-      content = File.read( filepath )
-      YAML.load "--- |\n#{content}"
     rescue => e
       self.logger.error e.message
       self.logger.error e.backtrace.join("\n")
