@@ -102,7 +102,7 @@ class PhpSensiolabsCrawler < CommonSecurity
     def self.read_yaml filepath
       Syck.load_file( filepath )
     rescue => e
-      read_yaml_utf filepath
+      read_yaml_retry filepath
     end
 
 
