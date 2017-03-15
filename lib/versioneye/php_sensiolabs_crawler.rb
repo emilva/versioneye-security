@@ -106,9 +106,9 @@ class PhpSensiolabsCrawler < CommonSecurity
     end
 
 
-    def self.read_yaml_utf filepath
+    def self.read_yaml_retry filepath
       content = File.read( filepath )
-      YAML.load "--- |\n#{content}"
+      Syck.load content.gsub("','", "', '")
     rescue => e
       correct_and_read filepath
     end
