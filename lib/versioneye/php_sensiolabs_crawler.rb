@@ -113,6 +113,18 @@ class PhpSensiolabsCrawler < CommonSecurity
 
       improved = content.gsub(match[1], "\"#{match[1]}\"")
       Syck.load( improved )
+    rescue => e
+      read_yaml_utf filepath
+    end
+
+
+    def self.read_yaml_utf filepath
+      content = File.read( filepath )
+      YAML.load "--- |\n#{content}"
+    rescue => e
+      self.logger.error e.message
+      self.logger.error e.backtrace.join("\n")
+      nil
     end
 
 
