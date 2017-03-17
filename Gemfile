@@ -13,7 +13,7 @@ group :development do
 end
 
 group :test do
-  gem 'simplecov'       , '~> 0.13.0'
+  gem 'simplecov'       , '~> 0.14.0'
   gem 'rspec'           , '~> 3.5.0'
   gem 'rspec_junit_formatter', '0.2.3'
   gem 'database_cleaner', '~> 1.5.1'
