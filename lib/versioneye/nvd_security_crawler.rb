@@ -152,7 +152,7 @@ class NvdSecurityCrawler < CommonSecurity
 
   def self.process_gav key, entry_map
     sps = key.gsub("gav://", "").split(":")
-    language = Product:A_LANGUAGE_JAVA
+    language = Product::A_LANGUAGE_JAVA
     prod_key = "#{sps[0]}/#{sps[1]}"
     version = sps[2]
     sv = create_or_update_sv( language, prod_key, entry_map )
