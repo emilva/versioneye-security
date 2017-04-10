@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/versioneye/versioneye-core.git
-  revision: ea15301ceba24a8caec4541051ea1f2bb786c821
-  tag: v11.8.3
+  revision: 724050dbd1c5e4c03afd992f5abb3f1043da94d5
+  tag: v11.8.4
   specs:
     versioneye-core (11.8.3)
       actionmailer (~> 5.0.1)
@@ -17,7 +17,7 @@ GIT
       net-ldap (~> 0.16.0)
       nokogiri (~> 1.7.1)
       oauth (~> 0.5.0)
-      octokit (~> 4.6.0)
+      octokit (~> 4.7.0)
       pdfkit (~> 0.8.2)
       persistent_httparty (~> 0.1.0)
       semverly (~> 1.0.0)
@@ -138,7 +138,7 @@ GEM
     nokogiri (1.7.1)
       mini_portile2 (~> 2.1.0)
     oauth (0.5.1)
-    octokit (4.6.2)
+    octokit (4.7.0)
       sawyer (~> 0.8.0, >= 0.5.3)
     pdfkit (0.8.2)
     persistent_http (1.0.6)
