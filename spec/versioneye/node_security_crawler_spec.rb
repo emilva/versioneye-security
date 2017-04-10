@@ -17,7 +17,7 @@ describe NodeSecurityCrawler do
       worker = Thread.new{ SecurityWorker.new.work }
 
       SecurityProducer.new("node_security")
-      sleep 10
+      sleep 60
 
       worker.exit
 
