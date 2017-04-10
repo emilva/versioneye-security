@@ -204,6 +204,8 @@ class NvdSecurityCrawler < CommonSecurity
 
   def self.process_cpe language, prod_key, entry_map, vendor_product
     sv = create_or_update_sv( language, prod_key, entry_map )
+    min30_ago = DateTime.now - 30.minutes
+    return nil if sv.created_at < min30_ago
 
     product = sv.product
     entry_map[:products][vendor_product].each do |cpe|
