@@ -1,5 +1,11 @@
 class NvdMapping
 
+  CVE_MAPPING = {
+    "CVE-2016-3720" => [
+      "gav://com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.7.3"
+    ]
+  }
+
   A_MAPPING = {
     "apache:apache_commons_daemon"=> {
       "Maven" => [

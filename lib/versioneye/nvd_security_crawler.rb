@@ -38,13 +38,14 @@ class NvdSecurityCrawler < CommonSecurity
     self.logger.info "#{entries.count} entries for #{file_path}"
 
     entries.each do |entry|
-      map = process_entry( entry )
-      next if map[:products].nil?
+      entry_map = process_entry( entry )
+      next if entry_map[:products].nil?
+      next if cve_mapping?( entry_map )
 
-      map[:products].keys.each do |vendor_product|
+      entry_map[:products].keys.each do |vendor_product|
         next if !NvdMapping::A_MAPPING.keys.include? vendor_product.to_s
 
-        create_or_update_svs( map, vendor_product )
+        create_or_update_svs( entry_map, vendor_product )
       end
     end
   rescue => e
@@ -134,25 +135,52 @@ class NvdSecurityCrawler < CommonSecurity
   end
 
 
-  def self.create_or_update_svs( map, vendor_product )
+  def self.cve_mapping?( entry_map )
+    keys = NvdMapping::CVE_MAPPING[entry_map[:cve]]
+    return false if keys.nil?
+
+    self.logger.info "CVE mapping exists for #{entry_map[:cve]}"
+    keys.each do |key|
+      self.logger.info " - CVE mapping exists for #{entry_map[:cve]} - #{key}"
+      if key.match(/\Agav\:/)
+        process_gav key, entry_map
+      end
+    end
+    true
+  end
+
+
+  def self.process_gav key, entry_map
+    sps = key.gsub("gav://", "").split(":")
+    language = Product:A_LANGUAGE_JAVA
+    prod_key = "#{sps[0]}/#{sps[1]}"
+    version = sps[2]
+    sv = create_or_update_sv( language, prod_key, entry_map )
+    process_version sv, sv.product, version
+    sv.affected_versions_string = sv.affected_versions.join(', ')
+    sv.save
+  end
+
+
+  def self.create_or_update_svs( entry_map, vendor_product )
     msg = " --- MATCH for #{vendor_product} --- "
     p msg
     self.logger.info msg
 
     mapping = NvdMapping::A_MAPPING[vendor_product]
-    proecess_maven_keys map, vendor_product, mapping
-    proecess_nuget_keys map, vendor_product, mapping
+    proecess_maven_keys entry_map, vendor_product, mapping
+    proecess_nuget_keys entry_map, vendor_product, mapping
   end
 
 
-  def self.proecess_maven_keys map, vendor_product, mapping
+  def self.proecess_maven_keys entry_map, vendor_product, mapping
     language = Product::A_LANGUAGE_JAVA
     prod_keys = mapping['Maven']
     return nil if prod_keys.nil?
 
     prod_keys.each do |pk|
       prod_key = pk.gsub(":", "/")
-      process_cpe( language, prod_key, map, vendor_product )
+      process_cpe( language, prod_key, entry_map, vendor_product )
     end
   rescue => e
     self.logger.error "ERROR in proecess_maven_keys with message: #{e.message}"
@@ -160,13 +188,13 @@ class NvdSecurityCrawler < CommonSecurity
   end
 
 
-  def self.proecess_nuget_keys map, vendor_product, mapping
+  def self.proecess_nuget_keys entry_map, vendor_product, mapping
     language = Product::A_LANGUAGE_CSHARP
     prod_keys = mapping['Nuget']
     return nil if prod_keys.nil?
 
     prod_keys.each do |prod_key|
-      process_cpe( language, prod_key, map, vendor_product )
+      process_cpe( language, prod_key, entry_map, vendor_product )
     end
   rescue => e
     self.logger.error "ERROR in proecess_nuget_keys with message: #{e.message}"
@@ -174,36 +202,11 @@ class NvdSecurityCrawler < CommonSecurity
   end
 
 
-  def self.process_cpe language, prod_key, map, vendor_product
-    cve = map[:cve]
-    sv = SecurityVulnerability.where(:language => language, :prod_key => prod_key, :cve => cve).first
-    if sv
-      self.logger.info "-- #{cve} exist already from #{sv.source} --"
-      return nil
-    end
-
-    sv = SecurityVulnerability.new({:language => language, :prod_key => prod_key, :source => "NVD"})
-    sv.description = map[:summary]
-    sv.summary = cve
-    sv.name_id = cve
-    sv.cve     = cve
-    sv.cves.push cve if !sv.cves.include?(cve)
-
-    sv.cwe = map[:cwe]
-    sv.cwes.push map[:cwe] if !sv.cwes.include?(map[:cwe])
-
-    sv.cvss_v2 = map[:cvss]
-
-    sv.publish_date = map[:published]
-    sv.modified     = map[:modified]
-
-    map[:links].each do |href|
-      lkey = href.gsub(".", "::")
-      sv.links[lkey] = href
-    end
+  def self.process_cpe language, prod_key, entry_map, vendor_product
+    sv = create_or_update_sv( language, prod_key, entry_map )
 
     product = sv.product
-    map[:products][vendor_product].each do |cpe|
+    entry_map[:products][vendor_product].each do |cpe|
       sps = cpe.split(":")
       version_string = sps[4]
       process_version sv, product, version_string
@@ -215,6 +218,34 @@ class NvdSecurityCrawler < CommonSecurity
   rescue => e
     self.logger.error "ERROR in process_cpe with message: #{e.message}"
     self.logger.error e.backtrace.join("\n")
+  end
+
+
+  def self.create_or_update_sv( language, prod_key, entry_map )
+    cve = entry_map[:cve]
+    sv = SecurityVulnerability.where(:language => language, :prod_key => prod_key, :cve => cve).first
+    return sv if sv
+
+    sv = SecurityVulnerability.new({:language => language, :prod_key => prod_key, :source => "NVD"})
+    sv.description = entry_map[:summary]
+    sv.summary = cve
+    sv.name_id = cve
+    sv.cve     = cve
+    sv.cves.push cve if !sv.cves.include?(cve)
+
+    sv.cwe = entry_map[:cwe]
+    sv.cwes.push entry_map[:cwe] if !sv.cwes.include?(entry_map[:cwe])
+
+    sv.cvss_v2 = entry_map[:cvss]
+
+    sv.publish_date = entry_map[:published]
+    sv.modified     = entry_map[:modified]
+
+    entry_map[:links].each do |href|
+      lkey = href.gsub(".", "::")
+      sv.links[lkey] = href
+    end
+    sv
   end
 
 
