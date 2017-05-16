@@ -2,10 +2,11 @@ source "http://rubygems.org"
 
 gem 'syck'    , '1.2.0'
 
-gem 'versioneye-core'    , :git => 'https://github.com/versioneye/versioneye-core.git', :tag => 'v11.8.13'
+gem 'versioneye-core'    , :git => 'https://github.com/versioneye/versioneye-core.git', :tag => 'v11.12.2'
 # gem 'versioneye-core'    , :path => "~/workspace/versioneye/versioneye-core"
 
 gem 'rufus-scheduler', '3.4.0'
+gem 'tomlrb', '~> 1.2'
 
 group :development do
   gem "shoulda"  , ">= 0"
