@@ -64,19 +64,19 @@ class RustSecurityCrawler < CommonSecurity
       return
     end
 
-    version_label = patched_versions.to_a.join(' || ')
-    vuln[:affected_versions] = remove_versions_by_label(product.versions, version_label)
-
+    patched_releases = patched_versions.to_a.join(' || ')
+    vuln.affected_versions = fetch_affected_versions( vuln, product, patched_releases )
     vuln
   end
 
 
-  # version_label - unaffected versions separated by ||
-  def self.remove_versions_by_label(versions, version_label)
+  # patched_releases - unaffected versions separated by ||
+  def self.fetch_affected_versions( vuln, product, patched_releases)
+    versions = product.versions
     return [] if versions.nil? || versions.empty?
 
     safe_versions = []
-    v_ranges = VersionService.from_ranges(versions.to_a, version_label)
+    v_ranges = VersionService.from_ranges(versions.to_a, patched_releases)
     v_ranges.to_a.each do |version_db|
       next if version_db.version.to_s.empty?
       next if safe_versions.include?(version_db.version)
@@ -91,6 +91,7 @@ class RustSecurityCrawler < CommonSecurity
 
       vulnerable << version.version
     end
+    mark_versions( vuln, product, affected_versions )
     vulnerable
   end
 
