@@ -37,6 +37,10 @@ namespace :versioneye do
       SecurityProducer.new "snyk_security"
     end
 
+    scheduler.every '60m' do
+      SecurityProducer.new "rust_security"
+    end
+
     scheduler.join
     while 1 == 1
       p "keep alive rake task"

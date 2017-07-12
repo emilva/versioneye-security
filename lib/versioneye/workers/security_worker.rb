@@ -42,6 +42,8 @@ class SecurityWorker < Worker
       NodeSecurityCrawler.crawl
     elsif message.eql?('snyk_security')
       SnykSecurityCrawler.crawl
+    elsif message.eql?('rust_security')
+      RustSecurityCrawler.crawl
     end
   rescue => e
     log.error e.message
