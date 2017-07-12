@@ -65,13 +65,13 @@ class RustSecurityCrawler < CommonSecurity
     end
 
     patched_releases = patched_versions.to_a.join(' || ')
-    vuln.affected_versions = fetch_affected_versions( vuln, product, patched_releases )
+    vuln.affected_versions = fetch_affected_versions( product, patched_releases, vuln )
     vuln
   end
 
 
   # patched_releases - unaffected versions separated by ||
-  def self.fetch_affected_versions( vuln, product, patched_releases)
+  def self.fetch_affected_versions( product, patched_releases, vuln = nil )
     versions = product.versions
     return [] if versions.nil? || versions.empty?
 
@@ -91,7 +91,7 @@ class RustSecurityCrawler < CommonSecurity
 
       vulnerable << version.version
     end
-    mark_versions( vuln, product, affected_versions )
+    mark_versions( vuln, product, vulnerable )
     vulnerable
   end
 

@@ -27,7 +27,7 @@ describe RustSecurityCrawler do
   }
 
 
-  context "remove_versions_by_label" do
+  context "fetch_affected_versions" do
     before do
       product1.versions << Version.new(version: '0.6.1')
       product1.versions << Version.new(version: '0.7.2')
@@ -41,8 +41,8 @@ describe RustSecurityCrawler do
     end
 
     it "returns correct version for >= 0.7.2" do
-      affected = RustSecurityCrawler.remove_versions_by_label(
-        product1.versions, '>= 0.7.2'
+      affected = RustSecurityCrawler.fetch_affected_versions(
+        product1, '>= 0.7.2'
       )
 
       expect( affected.size ).to eq(1)
@@ -50,8 +50,8 @@ describe RustSecurityCrawler do
     end
 
     it "returns correct version for > 0.6.2" do
-      affected = RustSecurityCrawler.remove_versions_by_label(
-        product1.versions, '> 0.6.2'
+      affected = RustSecurityCrawler.fetch_affected_versions(
+        product1, '> 0.6.2'
       )
 
       expect( affected.size ).to eq(1)
@@ -59,8 +59,8 @@ describe RustSecurityCrawler do
     end
 
     it "returns correct versions for >= 0.7.2, < 0.10.0" do
-      affected = RustSecurityCrawler.remove_versions_by_label(
-        product1.versions, '>= 0.7.2, < 0.10.0'
+      affected = RustSecurityCrawler.fetch_affected_versions(
+        product1, '>= 0.7.2, < 0.10.0'
       )
 
       expect( affected.size ).to eq(2)
@@ -69,8 +69,8 @@ describe RustSecurityCrawler do
     end
 
     it "returns correct version for combined range" do
-      affected = RustSecurityCrawler.remove_versions_by_label(
-        product1.versions, '> 0.7.2 || > 0.8.0 || > 0.9.0'
+      affected = RustSecurityCrawler.fetch_affected_versions(
+        product1, '> 0.7.2 || > 0.8.0 || > 0.9.0'
       )
 
       expect( affected.size ).to eq(1)
