@@ -5,6 +5,7 @@ gem 'syck'    , '1.3.0'
 gem 'versioneye-core'    , :git => 'https://github.com/versioneye/versioneye-core.git', :tag => 'v12.6.27'
 # gem 'versioneye-core'    , :path => "~/workspace/versioneye/versioneye-core"
 
+gem 'tomlrb', '~> 1.2'
 gem 'rufus-scheduler', '3.4.2'
 
 group :development do
