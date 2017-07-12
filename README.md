@@ -5,6 +5,7 @@
 This repo contains the security crawlers for [VersionEye](https://www.versioneye.com) written in ruby.
 Currently this projects has data fetchers for:
 
+ - Java ([NVD](http://nvd.nist.gov/))
  - Java ([VictimsDB](https://github.com/victims/victims-cve-db/))
  - Python ([VictimsDB](https://github.com/victims/victims-cve-db/))
  - Ruby ([Ruby Advisory DB](https://github.com/rubysec/ruby-advisory-db.git))
@@ -12,6 +13,7 @@ Currently this projects has data fetchers for:
  - PHP Magento ([Magento Security Advisory](https://github.com/Cotya/magento-security-advisories.git))
  - Node.JS ([NodeSecurity](https://nodesecurity.io/))
  - Node.JS ([Snyk](https://snyk.io/))
+ - Rust ([Rust Advisory](https://github.com/RustSec/advisory-db))
 
 ## Start the backend services for VersionEye
 
