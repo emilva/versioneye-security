@@ -1,7 +1,9 @@
 require 'tomlrb'
 
 class RustSecurityCrawler < CommonSecurity
+
   A_ADVISORY_URL = 'https://raw.githubusercontent.com/RustSec/advisory-db/master/Advisories.toml'
+
 
   def self.logger
     if !defined?(@@log) || @@log.nil?
@@ -9,6 +11,7 @@ class RustSecurityCrawler < CommonSecurity
     end
     @@log
   end
+
 
   def self.crawl
     logger.info "Going to crawl Rust security advisories"
@@ -23,6 +26,7 @@ class RustSecurityCrawler < CommonSecurity
     logger.error "Failed to crawl Rust advisories. #{e.message}"
     logger.error e.backtrace.join('\n')
   end
+
 
   def self.process_advisory(advisory, update_existing = false)
     vuln = SecurityVulnerability.where(
@@ -53,6 +57,7 @@ class RustSecurityCrawler < CommonSecurity
     vuln
   end
 
+
   def self.process_versions(product, vuln, patched_versions)
     if product.nil?
       logger.error "No product for #{vuln.to_json} - skipping processing versions"
@@ -65,23 +70,28 @@ class RustSecurityCrawler < CommonSecurity
     vuln
   end
 
+
   # version_label - unaffected versions separated by ||
   def self.remove_versions_by_label(versions, version_label)
-    return [] if versions.is_a?(Array) == false
-    return [] if versions.to_a.nil?
+    return [] if versions.nil? || versions.empty?
 
-    safe_versions = VersionService.from_ranges(
-      versions.to_a, version_label
-    ).to_a.reduce([]) do |acc, version_db|
-      acc << version_db[:version] if version_db[:version]
-      acc
-    end.to_set
+    safe_versions = []
+    v_ranges = VersionService.from_ranges(versions.to_a, version_label)
+    v_ranges.to_a.each do |version_db|
+      next if version_db.version.to_s.empty?
+      next if safe_versions.include?(version_db.version)
 
-    #remove all unaffected versions from product version list
-    versions.to_a.reduce([]) do |acc, v|
-      acc << v[:version] unless safe_versions.include? v[:version]
-      acc
+      safe_versions << version_db.version
     end
+
+    # remove all unaffected versions from product version list
+    vulnerable = []
+    versions.to_a.each do |version|
+      next if safe_versions.include? version.version
+
+      vulnerable << version.version
+    end
+    vulnerable
   end
 
 
@@ -100,7 +110,8 @@ class RustSecurityCrawler < CommonSecurity
       unaffected_versions_string: unaffected_txt,
       affected_versions_string: "!( #{unaffected_txt} )",
       links: {"details" => advisory[:url] },
-      approved: true #that file includes only accepted CVEs
+      approved: true # that file includes only accepted CVEs
     )
   end
+
 end
