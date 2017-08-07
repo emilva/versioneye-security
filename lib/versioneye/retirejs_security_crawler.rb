@@ -38,7 +38,7 @@ class RetirejsSecurityCrawler < CommonSecurity
       end
 
       update_sv package_name, sv, sec_issue
-      # mark_affected_versions sv
+      NodeSecurityCrawler.mark_affected_versions sv
     end
   rescue => e
     self.logger.error "ERROR in parse_package Message: #{e.message}"
