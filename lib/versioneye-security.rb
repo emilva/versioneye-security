@@ -14,6 +14,7 @@ require './lib/versioneye/node_security_crawler'
 require './lib/versioneye/snyk_security_crawler'
 require './lib/versioneye/nvd_security_crawler'
 require './lib/versioneye/rust_security_crawler'
+require './lib/versioneye/retirejs_security_crawler'
 
 require './lib/versioneye/producers/producer'
 require './lib/versioneye/producers/security_producer'
