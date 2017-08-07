@@ -37,7 +37,7 @@ class RetirejsSecurityCrawler < CommonSecurity
         self.logger.error "sv is nil for #{package_name}"
       end
 
-      update_sv sv, sec_issue
+      update_sv package_name, sv, sec_issue
       # mark_affected_versions sv
     end
   rescue => e
@@ -95,8 +95,16 @@ class RetirejsSecurityCrawler < CommonSecurity
   end
 
 
-  def self.update_sv sv, sec_issue
+  def self.update_sv package_name, sv, sec_issue
     sv.source         = 'Retire.js'
+    sv.prod_type      = Project::A_TYPE_BOWER
+    sv.language = 'JavaScript'
+    sv.prod_key = package_name
+    product = Product.fetch_bower package_name
+    if product
+      sv.language = product.language
+      sv.prod_key = product.prod_key
+    end
     sv.summary        = sec_issue['identifiers']['summary']
     sv.summary        = sv.name_id if sv.summary.to_s.empty?
 
@@ -141,20 +149,13 @@ class RetirejsSecurityCrawler < CommonSecurity
 
 
   def self.fetch_sv_with package_name, sec_issue
-    language = 'JavaScript'
-    prod_key = package_name
-    product = Product.fetch_bower package_name
-    if product
-      language = product.language
-      prod_key = product.prod_key
-    end
     name_id = get_id_for package_name, sec_issue
     return nil if name_id.to_s.empty?
 
-    sv = SecurityVulnerability.where(:language => language, :prod_key => prod_key, :name_id => name_id ).first
+    sv = SecurityVulnerability.where(:prod_type => Project::A_TYPE_BOWER, :package_name => package_name, :name_id => name_id ).first
     return sv if sv
 
-    SecurityVulnerability.new(:language => language, :prod_key => prod_key, :name_id => name_id )
+    SecurityVulnerability.new( :prod_type => Project::A_TYPE_BOWER, :package_name => package_name, :name_id => name_id )
   end
 
 
