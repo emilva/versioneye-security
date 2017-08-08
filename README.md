@@ -13,6 +13,7 @@ Currently this projects has data fetchers for:
  - PHP Magento ([Magento Security Advisory](https://github.com/Cotya/magento-security-advisories.git))
  - Node.JS ([NodeSecurity](https://nodesecurity.io/))
  - Node.JS ([Snyk](https://snyk.io/))
+ - JavaScript ([Retire.js](https://github.com/retireJS/retire.js))
  - Rust ([Rust Advisory](https://github.com/RustSec/advisory-db))
 
 ## Start the backend services for VersionEye
