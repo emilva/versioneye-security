@@ -44,6 +44,8 @@ class SecurityWorker < Worker
       SnykSecurityCrawler.crawl
     elsif message.eql?('rust_security')
       RustSecurityCrawler.crawl
+    elsif message.eql?('retire_security')
+      RetirejsSecurityCrawler.crawl
     end
   rescue => e
     log.error e.message
