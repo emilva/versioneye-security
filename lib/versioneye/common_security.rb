@@ -1,5 +1,6 @@
 class CommonSecurity
 
+
   def self.mark_versions sv, product, affected_versions
     # TODO use versioneye-core for this.
     # SecurityService.mark_versions sv, product, affected_versions
